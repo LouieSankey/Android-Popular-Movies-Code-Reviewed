@@ -16,6 +16,9 @@ import java.util.List;
 /**
  * Created by louissankey on 2/22/16.
  */
+
+//I have found and bookmarked a clear example on how to create a custom adapter here:
+//http://www.perfectapk.com/android-gridview-viewholder.html
 public class MoviePosterAdapter extends BaseAdapter {
     private Context mContext;
     private List<Movie> mMovies;
