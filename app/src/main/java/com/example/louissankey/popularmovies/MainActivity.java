@@ -2,6 +2,7 @@ package com.example.louissankey.popularmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -63,8 +64,17 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
 
-        getMovieJson(byPopularityUrl);
-        movieList = new ArrayList<>();
+        if(savedInstanceState != null){
+            mMainActivityHeaderTextView.setText(savedInstanceState.getString("HEADER_LABEL"));
+            movieList = (List<Movie>)savedInstanceState.get("MOVIE_LIST");
+            moviePosterAdapter = new MoviePosterAdapter(MainActivity.this, movieList);
+            mGridView.setAdapter(moviePosterAdapter);
+
+        }else {
+
+            getMovieJson(byPopularityUrl);
+            movieList = new ArrayList<>();
+        }
 
         //I was reminded of how to set up an onItemClickListener here:
         //http://stackoverflow.com/questions/22473350/open-a-new-activity-for-each-item-clicked-from-gridview
@@ -145,6 +155,16 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putParcelableArrayList("MOVIE_LIST", (ArrayList<Movie>) movieList);
+        savedInstanceState.putString("HEADER_LABEL", mMainActivityHeaderTextView.getText().toString());
+
 
     }
 

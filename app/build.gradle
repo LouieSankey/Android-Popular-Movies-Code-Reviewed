@@ -17,7 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         buildTypes.each {
-            it.buildConfigField 'String', 'POPULAR_MOVIES_API_KEY',  apiKey
+            it.buildConfigField 'String', 'POPULAR_MOVIES_API_KEY',  '"e1d2b7895cb7248c9ee568d54b43ef88"'
         }
         repositories {
             mavenCentral()
