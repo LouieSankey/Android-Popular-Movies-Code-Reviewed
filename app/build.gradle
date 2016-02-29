@@ -17,7 +17,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         buildTypes.each {
-            it.buildConfigField 'String', 'POPULAR_MOVIES_API_KEY',  '"e1d2b7895cb7248c9ee568d54b43ef88"'
+            it.buildConfigField 'String', 'POPULAR_MOVIES_API_KEY', '"e1d2b7895cb7248c9ee568d54b43ef88"'
+            it.buildConfigField 'String', 'YOUTUBE_API_KEY', '"AIzaSyBw5-mEHKBaYIRWq1W78V7Qi5jbMqSCT5c"';
         }
         repositories {
             mavenCentral()
@@ -28,8 +29,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.squareup.okhttp3:okhttp:3.1.2'}
+    compile 'com.squareup.okhttp3:okhttp:3.1.2'
+    compile 'com.android.support:support-v4:23.1.1'
+}

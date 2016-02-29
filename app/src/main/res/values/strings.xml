@@ -11,6 +11,7 @@
     <string name="popularity_url_key">&amp;sort_by=popularity.desc</string>
     <string name="rating_url_key">&amp;sort_by=vote_average.desc</string>
     <string name="themovedb_base_url">https://api.themoviedb.org/3/discover/movie/?api_key=</string>
+    <string name="themovedb_video_url">https://api.themoviedb.org/3/movie/</string>
     <string name="json_results_key">results</string>
     <string name="json_poster_path_key">poster_path</string>
     <string name="json_original_title_key">original_title</string>
@@ -21,4 +22,14 @@
     <string name="summary_label">Summary:</string>
     <string name="rating_label">Rating:</string>
     <string name="title_label">Title:</string>
+
+    //strings for youtube video player
+    <string name="hello_world">Hello world!</string>
+    <string name="player_error">Error initializing YouTube player</string>
+    <string name="seek_to">Jump To</string>
+    <string name="seek_to_hint">Seconds</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="id">id</string>
 </resources>

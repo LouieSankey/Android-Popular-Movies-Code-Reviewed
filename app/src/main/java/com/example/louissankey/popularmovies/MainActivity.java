@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String MOVIE_POSTER_URL = "MOVIE_POSTER_URL";
     public static final String MOVIE_OVERVIEW = "MOVIE_OVERVIEW";
     public static final String MOVIE_VOTE_AVERAGE = "MOVIE_VOTE_AVERAGE";
+    public static final String MOVIE_ID = "MOVIE_ID";
 
     private String byPopularityUrl = "&sort_by=popularity.desc";
     //also didn't know if sort_by vote_average was best becasue it returned movies that may only have 1 rating of 10. Not very informative.
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString(MOVIE_POSTER_URL, movie.getPosterUrl());
                 bundle.putString(MOVIE_OVERVIEW, movie.getOverview());
                 bundle.putDouble(MOVIE_VOTE_AVERAGE, movie.getVoteAverage());
+                bundle.putInt(MOVIE_ID, movie.getMovieId());
 
                 Intent intent = new Intent(MainActivity.this, MovieDetails.class);
                 intent.putExtras(bundle);
@@ -133,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
                         movie.setOverview(movieObject.getString(getString(R.string.json_overview_key)));
                         movie.setReleaseDate(movieObject.getString(getString(R.string.json_release_date_key)));
                         movie.setVoteAverage(movieObject.getDouble(getString(R.string.json_vote_average_key)));
+                        movie.setMovieId(movieObject.getInt(getString(R.string.id)));
                         movieList.add(movie);
                     }
 
@@ -164,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
 
         savedInstanceState.putParcelableArrayList("MOVIE_LIST", (ArrayList<Movie>) movieList);
         savedInstanceState.putString("HEADER_LABEL", mMainActivityHeaderTextView.getText().toString());
-
 
     }
 

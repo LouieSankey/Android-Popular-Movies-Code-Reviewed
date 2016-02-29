@@ -12,6 +12,7 @@ public class Movie implements Parcelable{
     private String mPosterUrl;
     private String mOverview;
     private String mReleaseDate;
+    private int mMovieId;
     private double mVoteAverage;
 
     public Movie(){
@@ -51,6 +52,10 @@ public class Movie implements Parcelable{
             return new Movie[size];
         }
     };
+
+    public int getMovieId() {return mMovieId;}
+
+    public void setMovieId(int movieId) {mMovieId = movieId;}
 
     public String getTitle() { return mTitle;}
 
