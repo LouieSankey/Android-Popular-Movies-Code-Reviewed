@@ -20,7 +20,7 @@
         android:id="@+id/linear_layout"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:weightSum="100">
 
         <LinearLayout
@@ -31,7 +31,7 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/movie_details_imageview"
                 android:src="@drawable/movie_details_placeholder_image"
                 android:layout_marginBottom="16dp"
@@ -75,21 +75,30 @@
                 android:id="@+id/votes_details"
                 android:textAppearance="@android:style/TextAppearance.Medium"/>
 
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Favorite"
+                android:id="@+id/favorite_checkBox"
+                android:button="@null"
+                android:textSize="18sp"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove favorites"
+                android:id="@+id/button"/>
+
+
         </LinearLayout>
 
     </LinearLayout>
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/summary_label"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/linear_layout"
-        android:layout_centerHorizontal="true"
-        android:textSize="18sp"/>
-
-    <TextView
+        <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Lorem ipsum dolor sit amet, et et luctus, libero cursus, nec cras ultricies tristique neque consequat, eu faucibus leo, purus vitae imperdiet quis et esse."
@@ -98,12 +107,62 @@
         android:typeface="sans"
         android:layout_below="@+id/textView3"/>
 
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/frame_layout"
-            android:layout_below="@+id/overview_details">
+            android:layout_below="@+id/overview_details"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp">
         </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/frame_layout"
+            android:layout_centerHorizontal="true"
+            tools:text="Reviews"
+            android:id="@+id/review_header_label"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Author: "
+            android:id="@+id/author_label"
+            android:layout_below="@+id/review_header_label"
+            android:textSize="16sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/author_name"
+            tools:text="author name"
+            android:layout_alignBottom="@+id/author_label"
+            android:layout_toRightOf="@+id/author_label"
+            android:layout_toEndOf="@+id/author_label"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/summary_label"
+            android:id="@+id/textView3"
+            android:layout_below="@+id/linear_layout"
+            android:layout_centerHorizontal="true"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Lorem ipsum dolor sit amet, et et luctus, libero cursus, nec cras ultricies tristique neque consequat, eu faucibus leo, purus vitae imperdiet quis et esse."
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:typeface="sans"
+            android:id="@+id/reviews_textview"
+            android:layout_below="@+id/author_label"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            />
 
 
     </RelativeLayout>

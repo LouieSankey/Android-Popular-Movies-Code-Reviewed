@@ -4,16 +4,19 @@
                 android:layout_height="match_parent" >
 
     <TextView
-        android:id="@android:id/empty"
+        android:id="@+id/trailer_header_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Trailer Currently Unavailable"/>
+        android:text="Trailer"
+        android:textSize="18sp"
+        android:layout_centerHorizontal="true"/>
 
     <FrameLayout
         android:id="@+id/youtube_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_below="@id/trailer_header_label"
         android:visibility="visible" />
 
 </RelativeLayout>

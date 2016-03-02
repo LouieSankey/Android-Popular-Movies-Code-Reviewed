@@ -1,8 +1,8 @@
 package com.example.louissankey.popularmovies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -12,9 +12,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.louissankey.popularmovies.model.Movie;
 import com.example.louissankey.popularmovies.model.MoviePosterAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +25,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -47,14 +52,18 @@ public class MainActivity extends AppCompatActivity {
     public static final String MOVIE_OVERVIEW = "MOVIE_OVERVIEW";
     public static final String MOVIE_VOTE_AVERAGE = "MOVIE_VOTE_AVERAGE";
     public static final String MOVIE_ID = "MOVIE_ID";
+    public static final String FAVORITE_MOVIES = "FAVORITE_MOVIES";
 
     private String byPopularityUrl = "&sort_by=popularity.desc";
-    //also didn't know if sort_by vote_average was best becasue it returned movies that may only have 1 rating of 10. Not very informative.
     private String byHighestRatedUrl = "&sort_by=vote_average.desc";
 
     private List<Movie> movieList;
+    private List<Movie> favoriteMoviesList;
     private String jsonData;
     private MoviePosterAdapter moviePosterAdapter;
+
+    //provided so when user updates favorites they can navigate directly back to "favorites" and see update via onActivityResult method
+    private int mSettingForResult;
 
 
     @Override
@@ -65,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
 
+
+
         if(savedInstanceState != null){
             mMainActivityHeaderTextView.setText(savedInstanceState.getString("HEADER_LABEL"));
             movieList = (List<Movie>)savedInstanceState.get("MOVIE_LIST");
@@ -73,9 +84,19 @@ public class MainActivity extends AppCompatActivity {
 
         }else {
 
+
+
             getMovieJson(byPopularityUrl);
+            mSettingForResult = 0;
             movieList = new ArrayList<>();
         }
+
+
+
+
+
+
+
 
         //I was reminded of how to set up an onItemClickListener here:
         //http://stackoverflow.com/questions/22473350/open-a-new-activity-for-each-item-clicked-from-gridview
@@ -91,14 +112,70 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putDouble(MOVIE_VOTE_AVERAGE, movie.getVoteAverage());
                 bundle.putInt(MOVIE_ID, movie.getMovieId());
 
+                //todo used code in three places: needs refactor
+                favoriteMoviesList = getFavoriteMoviesList();
+                //todo end
+
+                if(favoriteMoviesList !=null) {
+                    Iterator<Movie> iterator = favoriteMoviesList.iterator();
+                    while (iterator.hasNext()) {
+
+                        Movie favoriteMovie = iterator.next();
+                        if (favoriteMovie.getMovieId() == movie.getMovieId()) {
+                            bundle.putBoolean("IS_CHECKED", true);
+                            break;
+                        } else {
+                            bundle.putBoolean("IS_CHECKED", false);
+                        }
+                    }
+                }
+
+
                 Intent intent = new Intent(MainActivity.this, MovieDetails.class);
                 intent.putExtras(bundle);
-                startActivity(intent);
+                startActivityForResult(intent, mSettingForResult);
 
             }
         });
 
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if (resultCode == RESULT_CANCELED) {
+                //todo used code in three places: needs refactor
+                movieList = getFavoriteMoviesList();
+                moviePosterAdapter = new MoviePosterAdapter(MainActivity.this, movieList);
+                mGridView.setAdapter(moviePosterAdapter);
+                //todo end
+            }
+        }
+    }
+
+    private List<Movie> getFavoriteMoviesList() {
+        SharedPreferences prefs = getSharedPreferences(FAVORITE_MOVIES, MODE_PRIVATE);
+        final String favoriteMoviesString = prefs.getString(FAVORITE_MOVIES, null);
+
+        //if movie is in favoriteMoviesList bundle checkmark set boolean
+        if(favoriteMoviesString != null) {
+            GsonBuilder gsonb = new GsonBuilder();
+            Gson gson = gsonb.create();
+            Movie[] list = gson.fromJson(favoriteMoviesString, Movie[].class);
+            favoriteMoviesList = new ArrayList<>();
+            favoriteMoviesList.addAll(Arrays.asList(list));
+        }
+        return favoriteMoviesList;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+    }
+
 
     public void getMovieJson(final String sortUrl) {
 
@@ -118,7 +195,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+
                 movieList.clear();
+
                 jsonData = response.body().string();
                 Log.v(TAG, jsonData);
                 JSONObject movieJson;
@@ -186,13 +265,52 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_popularity) {
-            getMovieJson(byPopularityUrl);
-        } else if (id == R.id.action_ratings) {
-            getMovieJson(byHighestRatedUrl);
+        switch (id){
+            case R.id.action_popularity :
+                getMovieJson(byPopularityUrl);
+                mSettingForResult = 0;
+                break;
+            case R.id.action_ratings :
+                getMovieJson(byHighestRatedUrl);
+                mSettingForResult = 0;
+                break;
+            case R.id.action_favorites :
 
+
+/*
+                //todo used code in three places: needs refactor
+                SharedPreferences prefs = getSharedPreferences(FAVORITE_MOVIES, MODE_PRIVATE);
+                final String favoriteMoviesString = prefs.getString(FAVORITE_MOVIES, null);
+
+                if(favoriteMoviesString != null) {
+                    GsonBuilder gsonb = new GsonBuilder();
+                    Gson gson = gsonb.create();
+                    Movie[] list = gson.fromJson(favoriteMoviesString, Movie[].class);
+                    favoriteMoviesList = new ArrayList<>();
+                    favoriteMoviesList.addAll(Arrays.asList(list));
+                }
+                //todo end*/
+
+                favoriteMoviesList = getFavoriteMoviesList();
+                if(favoriteMoviesList != null){
+                    movieList.clear();
+                    movieList = favoriteMoviesList;
+                    moviePosterAdapter = new MoviePosterAdapter(MainActivity.this, movieList);
+                    mGridView.setAdapter(moviePosterAdapter);
+                    mSettingForResult = 1;
+                }else{
+                    Toast.makeText(MainActivity.this, "You have no favs", Toast.LENGTH_LONG).show();
+                }
+
+
+
+
+                break;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
