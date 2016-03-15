@@ -25,6 +25,10 @@
             android:label="@string/title_activity_movie_details"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <provider
+            android:name="com.example.louissankey.popularmovies.MoviesProvider"
+            android:authorities="com.example.louissankey.popularmovies.MoviesProvider"
+            />
     </application>
 
 </manifest>

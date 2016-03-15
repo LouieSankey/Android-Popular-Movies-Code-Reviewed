@@ -85,13 +85,6 @@
                 android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
                 />
 
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Remove favorites"
-                android:id="@+id/button"/>
-
 
         </LinearLayout>
 

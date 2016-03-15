@@ -1,40 +1,25 @@
 package com.example.louissankey.popularmovies;
 
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.louissankey.popularmovies.model.Movie;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.RunnableFuture;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -63,8 +48,7 @@ public class MovieDetails extends AppCompatActivity{
     TextView authorLabel;
     @Bind(R.id.favorite_checkBox)
     CheckBox favoriteCheckbox;
-    @Bind(R.id.button)
-    Button mButton;
+
 
     public static final String TAG = MovieDetails.class.getSimpleName();
     public static final String MOVIE_TRAILER_KEY = "MOVIE_TRAILER_KEY";
@@ -82,15 +66,6 @@ public class MovieDetails extends AppCompatActivity{
         //todo remove this code
         SharedPreferences preferences = getSharedPreferences(MainActivity.FAVORITE_MOVIES, MODE_PRIVATE);
         final SharedPreferences.Editor editor = preferences.edit();
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editor.clear();
-                editor.apply();
-            }
-        });
-
-
 
         Bundle extras = getIntent().getExtras();
         mMovieId = extras.getInt(MainActivity.MOVIE_ID);
@@ -109,9 +84,6 @@ public class MovieDetails extends AppCompatActivity{
             runnable.run();
         }
 
-
-
-
         Picasso.with(this)
                 .load(getString(R.string.image_path_prefix_url) + moviePosterUrl)
                 .into(movieDetailsImageView);
@@ -125,57 +97,17 @@ public class MovieDetails extends AppCompatActivity{
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
+                MoviesDatabaseHandler db = new MoviesDatabaseHandler(MovieDetails.this, null, null, 1);
 
-                SharedPreferences preferences = getSharedPreferences(MainActivity.FAVORITE_MOVIES, MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                String favoriteMoviesString = preferences.getString(MainActivity.FAVORITE_MOVIES, null);
+            if(isChecked){
+                db.addMovie(new Movie(mMovieId, movieTitle, moviePosterUrl, movieOverview,  moveVoteAverage));
 
-                List<Movie> favoriteMoviesList = new ArrayList<>();
-                GsonBuilder gsonb = new GsonBuilder();
-                Gson gson = gsonb.create();
+            }else{
 
-                Movie[] favoriteMoviesArray;
+                Movie movie = db.getMovie(mMovieId);
+                db.deleteMovie(movie.getMovieId());
+            }
 
-                if(favoriteMoviesString != null) {
-                   //convert array to arraylist
-                    favoriteMoviesArray = gson.fromJson(favoriteMoviesString, Movie[].class);
-                    favoriteMoviesList.addAll(Arrays.asList(favoriteMoviesArray));
-
-                }
-
-                if(isChecked) {
-
-                    //add the new movie to the arrayList
-                    Movie newFavoriteMovie = new Movie();
-                    newFavoriteMovie.setMovieId(mMovieId);
-                    newFavoriteMovie.setTitle(movieTitle);
-                    newFavoriteMovie.setPosterUrl(moviePosterUrl);
-                    newFavoriteMovie.setVoteAverage(moveVoteAverage);
-                    newFavoriteMovie.setOverview(movieOverview);
-
-                    favoriteMoviesList.add(newFavoriteMovie);
-
-                    //convert back to String and store in preferences
-                    String newFavoriteMovies = gson.toJson(favoriteMoviesList);
-                    editor.putString(MainActivity.FAVORITE_MOVIES, newFavoriteMovies);
-
-                }else{
-
-                    //remove movie from favoriteMoviesList
-                    Iterator<Movie> iterator = favoriteMoviesList.iterator();
-                    while (iterator.hasNext()) {
-                        Movie movie = iterator.next();
-                        if (movie.getMovieId() == mMovieId) {
-                            iterator.remove();
-                        }
-                    }
-
-                    //convert back to string and store in preferences
-                    String newFavoriteMovies = gson.toJson(favoriteMoviesList);
-                    editor.putString(MainActivity.FAVORITE_MOVIES, newFavoriteMovies);
-
-                }
-                editor.commit();
             }
         });
 

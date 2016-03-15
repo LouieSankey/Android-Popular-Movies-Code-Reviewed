@@ -1,7 +1,6 @@
 package com.example.louissankey.popularmovies;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,8 +15,6 @@ import android.widget.Toast;
 
 import com.example.louissankey.popularmovies.model.Movie;
 import com.example.louissankey.popularmovies.model.MoviePosterAdapter;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +22,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -75,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
 
-
         if(savedInstanceState != null){
             mMainActivityHeaderTextView.setText(savedInstanceState.getString("HEADER_LABEL"));
             movieList = (List<Movie>)savedInstanceState.get("MOVIE_LIST");
@@ -93,11 +88,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
         //I was reminded of how to set up an onItemClickListener here:
         //http://stackoverflow.com/questions/22473350/open-a-new-activity-for-each-item-clicked-from-gridview
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -112,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putDouble(MOVIE_VOTE_AVERAGE, movie.getVoteAverage());
                 bundle.putInt(MOVIE_ID, movie.getMovieId());
 
-                //todo used code in three places: needs refactor
+
                 favoriteMoviesList = getFavoriteMoviesList();
                 //todo end
 
@@ -155,20 +145,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private List<Movie> getFavoriteMoviesList() {
-        SharedPreferences prefs = getSharedPreferences(FAVORITE_MOVIES, MODE_PRIVATE);
-        final String favoriteMoviesString = prefs.getString(FAVORITE_MOVIES, null);
 
-        //if movie is in favoriteMoviesList bundle checkmark set boolean
-        if(favoriteMoviesString != null) {
-            GsonBuilder gsonb = new GsonBuilder();
-            Gson gson = gsonb.create();
-            Movie[] list = gson.fromJson(favoriteMoviesString, Movie[].class);
-            favoriteMoviesList = new ArrayList<>();
-            favoriteMoviesList.addAll(Arrays.asList(list));
-        }
-        return favoriteMoviesList;
-    }
 
     @Override
     public void onResume(){
@@ -240,6 +217,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+//todo: does not need own method
+    private List<Movie> getFavoriteMoviesList() {
+        MoviesDatabaseHandler db = new MoviesDatabaseHandler(this, null, null, 1);
+        List<Movie> movies = db.getAllMovies();
+        return movies;
+    }
+
+
+
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);
@@ -277,19 +264,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_favorites :
 
 
-/*
-                //todo used code in three places: needs refactor
-                SharedPreferences prefs = getSharedPreferences(FAVORITE_MOVIES, MODE_PRIVATE);
-                final String favoriteMoviesString = prefs.getString(FAVORITE_MOVIES, null);
-
-                if(favoriteMoviesString != null) {
-                    GsonBuilder gsonb = new GsonBuilder();
-                    Gson gson = gsonb.create();
-                    Movie[] list = gson.fromJson(favoriteMoviesString, Movie[].class);
-                    favoriteMoviesList = new ArrayList<>();
-                    favoriteMoviesList.addAll(Arrays.asList(list));
-                }
-                //todo end*/
 
                 favoriteMoviesList = getFavoriteMoviesList();
                 if(favoriteMoviesList != null){
@@ -311,6 +285,8 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
 
 }

@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
-
+//
 //To configure this fragment to play youtube videos I followed the example here:
 //https://gist.github.com/takeshiyako2/e776bbaf2966c6501c4f
 public class MovieTrailerFragment extends Fragment {

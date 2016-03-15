@@ -15,9 +15,6 @@ public class Movie implements Parcelable{
     private int mMovieId;
     private double mVoteAverage;
 
-    public Movie(){
-
-    }
 
     public Movie(Parcel in) {
         mTitle = in.readString();
@@ -52,6 +49,19 @@ public class Movie implements Parcelable{
             return new Movie[size];
         }
     };
+
+    public Movie(){
+
+    }
+
+    public Movie(int movieId, String title, String posterUrl, String overview, double voteAverage){
+        mMovieId = movieId;
+        mTitle = title;
+        mOverview = overview;
+        mPosterUrl = posterUrl;
+        //mReleaseDate = releaseDate;
+        mVoteAverage = voteAverage;
+    }
 
     public int getMovieId() {return mMovieId;}
 
