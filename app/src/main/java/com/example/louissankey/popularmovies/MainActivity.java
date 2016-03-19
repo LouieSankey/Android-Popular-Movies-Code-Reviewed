@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String MOVIE_VOTE_AVERAGE = "MOVIE_VOTE_AVERAGE";
     public static final String MOVIE_ID = "MOVIE_ID";
     public static final String FAVORITE_MOVIES = "FAVORITE_MOVIES";
+    public static final String RELEASE_DATE = "RELEASE_DATE";
+    public static final String IS_CHECKED = "IS_CHECKED";
 
     private String byPopularityUrl = "&sort_by=popularity.desc";
     private String byHighestRatedUrl = "&sort_by=vote_average.desc";
@@ -61,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
     //provided so when user updates favorites they can navigate directly back to "favorites" and see update via onActivityResult method
     private int mSettingForResult;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
+
+       //deleteDatabase("favoriteMovies");
 
 
         if(savedInstanceState != null){
@@ -79,32 +82,27 @@ public class MainActivity extends AppCompatActivity {
 
         }else {
 
-
-
             getMovieJson(byPopularityUrl);
             mSettingForResult = 0;
             movieList = new ArrayList<>();
         }
-
-
 
         //I was reminded of how to set up an onItemClickListener here:
         //http://stackoverflow.com/questions/22473350/open-a-new-activity-for-each-item-clicked-from-gridview
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Movie movie = movieList.get(position);
 
+                Movie movie = movieList.get(position);
                 Bundle bundle = new Bundle();
                 bundle.putString(MOVIE_TITLE, movie.getTitle());
                 bundle.putString(MOVIE_POSTER_URL, movie.getPosterUrl());
                 bundle.putString(MOVIE_OVERVIEW, movie.getOverview());
                 bundle.putDouble(MOVIE_VOTE_AVERAGE, movie.getVoteAverage());
                 bundle.putInt(MOVIE_ID, movie.getMovieId());
-
+                bundle.putString(RELEASE_DATE, movie.getReleaseDate());
 
                 favoriteMoviesList = getFavoriteMoviesList();
-                //todo end
 
                 if(favoriteMoviesList !=null) {
                     Iterator<Movie> iterator = favoriteMoviesList.iterator();
@@ -112,10 +110,10 @@ public class MainActivity extends AppCompatActivity {
 
                         Movie favoriteMovie = iterator.next();
                         if (favoriteMovie.getMovieId() == movie.getMovieId()) {
-                            bundle.putBoolean("IS_CHECKED", true);
+                            bundle.putBoolean(IS_CHECKED, true);
                             break;
                         } else {
-                            bundle.putBoolean("IS_CHECKED", false);
+                            bundle.putBoolean(IS_CHECKED, false);
                         }
                     }
                 }
@@ -136,11 +134,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 1) {
             if (resultCode == RESULT_CANCELED) {
-                //todo used code in three places: needs refactor
                 movieList = getFavoriteMoviesList();
                 moviePosterAdapter = new MoviePosterAdapter(MainActivity.this, movieList);
                 mGridView.setAdapter(moviePosterAdapter);
-                //todo end
+
             }
         }
     }
@@ -180,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject movieJson;
 
                 try {
-                    //I didn't understand if I should try to get more than only the first page of json
                     movieJson = new JSONObject(jsonData);
                     JSONArray results = movieJson.getJSONArray(getString(R.string.json_results_key));
                     for (int i = 0; i < results.length(); i++) {
@@ -192,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
                         movie.setReleaseDate(movieObject.getString(getString(R.string.json_release_date_key)));
                         movie.setVoteAverage(movieObject.getDouble(getString(R.string.json_vote_average_key)));
                         movie.setMovieId(movieObject.getInt(getString(R.string.id)));
+
                         movieList.add(movie);
                     }
 
@@ -224,9 +221,6 @@ public class MainActivity extends AppCompatActivity {
         return movies;
     }
 
-
-
-
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);
@@ -235,7 +229,6 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putString("HEADER_LABEL", mMainActivityHeaderTextView.getText().toString());
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -262,18 +255,19 @@ public class MainActivity extends AppCompatActivity {
                 mSettingForResult = 0;
                 break;
             case R.id.action_favorites :
-
-
-
                 favoriteMoviesList = getFavoriteMoviesList();
+
                 if(favoriteMoviesList != null){
+
                     movieList.clear();
                     movieList = favoriteMoviesList;
                     moviePosterAdapter = new MoviePosterAdapter(MainActivity.this, movieList);
                     mGridView.setAdapter(moviePosterAdapter);
+                    mMainActivityHeaderTextView.setText(R.string.favorite_movies);
                     mSettingForResult = 1;
+
                 }else{
-                    Toast.makeText(MainActivity.this, "You have no favs", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "You have no movies saved to your favorites.", Toast.LENGTH_LONG).show();
                 }
 
 

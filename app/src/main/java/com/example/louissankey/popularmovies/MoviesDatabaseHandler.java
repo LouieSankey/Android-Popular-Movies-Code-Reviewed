@@ -32,7 +32,7 @@ public class MoviesDatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_TITLE = "title";
     public static final String KEY_POSTER_URL = "posterUrl";
     public static final String KEY_OVERVIEW = "overview";
-    //public static final String KEY_RELEASE_DATE = "releaseDate";
+    public static final String KEY_RELEASE_DATE = "releaseDate";
     public static final String KEY_AVERAGE = "voteAverage";
 
 
@@ -44,16 +44,16 @@ public class MoviesDatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_MOVIES_TABLE = "CREATE TABLE "
+        String CREATE_MOVIES_TABLE = "CREATE TABLE IF NOT EXISTS "
                 + TABLE_MOVIE + "(" + KEY_MOVIE_ID + " INTEGER_PRIMARY_KEY, "
                 + KEY_TITLE + " TEXT, "
                 + KEY_POSTER_URL + " TEXT, "
                 + KEY_OVERVIEW + " TEXT, "
-                //+ KEY_RELEASE_DATE + " TEXT, "
-               // + KEY_MOVIE_ID + " TEXT, "
+                + KEY_RELEASE_DATE + " TEXT, "
                 + KEY_AVERAGE + " TEXT" + ")";
 
         db.execSQL(CREATE_MOVIES_TABLE);
+        Log.v("database created", " l");
     }
 
     @Override
@@ -68,19 +68,20 @@ public class MoviesDatabaseHandler extends SQLiteOpenHelper {
     public void addMovie(Movie movie) {
 
         ContentValues values = new ContentValues();
+        values.put(KEY_MOVIE_ID, movie.getMovieId());
         values.put(KEY_TITLE, movie.getTitle());
         values.put(KEY_POSTER_URL, movie.getPosterUrl());
         values.put(KEY_OVERVIEW, movie.getOverview());
-        //values.put(KEY_RELEASE_DATE, movie.getReleaseDate());
-        values.put(KEY_MOVIE_ID, movie.getMovieId());
+        values.put(KEY_RELEASE_DATE, movie.getReleaseDate());
         values.put(KEY_AVERAGE, movie.getVoteAverage());
 
         mContentResolver.insert(MoviesProvider.CONTENT_URI, values);
+        Log.v("database added to", " l");
     }
 
     Movie getMovie(int movieId) {
         String[] projection = {KEY_MOVIE_ID,
-                KEY_TITLE, KEY_POSTER_URL, KEY_OVERVIEW, KEY_AVERAGE };
+                KEY_TITLE, KEY_POSTER_URL, KEY_OVERVIEW, KEY_RELEASE_DATE, KEY_AVERAGE };
 
         String selection = "movieId = \"" + movieId + "\"";
 
@@ -91,10 +92,9 @@ public class MoviesDatabaseHandler extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
-        Movie movie = new Movie(cursor.getInt(0),
-                cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getInt(4));
+            return new Movie(cursor.getInt(0),
+                    cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getDouble(5));
 
-        return movie;
     }
 
 
@@ -111,21 +111,19 @@ public class MoviesDatabaseHandler extends SQLiteOpenHelper {
     public List<Movie> getAllMovies() {
         List<Movie> contactList = new ArrayList<>();
 
-        Log.v("list", "loaded");
         Cursor cursor = mContentResolver.query(MoviesProvider.CONTENT_URI, null, null, null, null);
+        Log.v("movie list", "query");
 
 
         if (cursor.moveToFirst()) {
             do {
                 Movie movie = new Movie();
-                //movie.set_id(Integer.parseInt(cursor.getString(0)));
                 movie.setMovieId(cursor.getInt(0));
                 movie.setTitle(cursor.getString(1));
                 movie.setPosterUrl(cursor.getString(2));
                 movie.setOverview(cursor.getString(3));
-                //movie.setReleaseDate(cursor.getString(4));
-
-                movie.setVoteAverage(cursor.getInt(4));
+                movie.setReleaseDate(cursor.getString(4));
+                movie.setVoteAverage(cursor.getDouble(5));
 
                 contactList.add(movie);
             } while (cursor.moveToNext());

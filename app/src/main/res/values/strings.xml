@@ -35,4 +35,7 @@
     <string name="type">type</string>
     <string name="trailer">Trailer</string>
     <string name="action_favorites">Favorites</string>
+    <string name="favorite_movies">Viewing Favorite Movies</string>
+    <string name="reviews">Reviews</string>
+    <string name="author">"Author: "</string>
 </resources>

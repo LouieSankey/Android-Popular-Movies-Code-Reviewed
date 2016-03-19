@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -48,6 +49,8 @@ public class MovieDetails extends AppCompatActivity{
     TextView authorLabel;
     @Bind(R.id.favorite_checkBox)
     CheckBox favoriteCheckbox;
+    @Bind(R.id.releaseDateTextView)
+    TextView releaseDateTextView;
 
 
     public static final String TAG = MovieDetails.class.getSimpleName();
@@ -72,8 +75,9 @@ public class MovieDetails extends AppCompatActivity{
         final String movieTitle = extras.getString(MainActivity.MOVIE_TITLE);
         final String moviePosterUrl = extras.getString(MainActivity.MOVIE_POSTER_URL);
         final String movieOverview = extras.getString(MainActivity.MOVIE_OVERVIEW);
-        final Double moveVoteAverage = extras.getDouble(MainActivity.MOVIE_VOTE_AVERAGE);
-        Boolean isChecked = extras.getBoolean("IS_CHECKED");
+        final String movieReleaseDate = extras.getString(MainActivity.RELEASE_DATE);
+        final Double movieVoteAverage = extras.getDouble(MainActivity.MOVIE_VOTE_AVERAGE);
+        Boolean isChecked = extras.getBoolean(MainActivity.IS_CHECKED);
         if(isChecked){
             Runnable runnable = new Runnable() {
                 @Override
@@ -91,7 +95,8 @@ public class MovieDetails extends AppCompatActivity{
 
         titleDetailsTextView.setText(movieTitle);
         overveiewDetailsTextView.setText(movieOverview);
-        votesDetailsTextView.setText(NumberFormat.getInstance().format(moveVoteAverage));
+        votesDetailsTextView.setText(NumberFormat.getInstance().format(movieVoteAverage));
+        releaseDateTextView.setText(movieReleaseDate);
 
         favoriteCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -100,8 +105,7 @@ public class MovieDetails extends AppCompatActivity{
                 MoviesDatabaseHandler db = new MoviesDatabaseHandler(MovieDetails.this, null, null, 1);
 
             if(isChecked){
-                db.addMovie(new Movie(mMovieId, movieTitle, moviePosterUrl, movieOverview,  moveVoteAverage));
-
+                db.addMovie(new Movie(mMovieId, movieTitle, moviePosterUrl, movieOverview, movieReleaseDate, movieVoteAverage));
             }else{
 
                 Movie movie = db.getMovie(mMovieId);
@@ -156,8 +160,8 @@ public class MovieDetails extends AppCompatActivity{
 
                             try {
 
-                                    reviewsHeaderLAbel.setText("Reviews");
-                                    authorLabel.setText("Author: ");
+                                    reviewsHeaderLAbel.setText(R.string.reviews);
+                                    authorLabel.setText(R.string.author);
                                     authorNameTextView.setText(reviewObject.getString("author"));
                                     reviewsTextView.setText(reviewObject.getString("content"));
 

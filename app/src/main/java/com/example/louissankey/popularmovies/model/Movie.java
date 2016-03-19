@@ -17,20 +17,24 @@ public class Movie implements Parcelable{
 
 
     public Movie(Parcel in) {
+        mMovieId = in.readInt();
         mTitle = in.readString();
         mPosterUrl = in.readString();
         mOverview = in.readString();
         mReleaseDate = in.readString();
         mVoteAverage = in.readDouble();
+        mReleaseDate = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mMovieId);
         dest.writeString(mTitle);
         dest.writeString(mPosterUrl);
         dest.writeString(mOverview);
         dest.writeString(mReleaseDate);
         dest.writeDouble(mVoteAverage);
+        dest.writeString(mReleaseDate);
     }
 
     @Override
@@ -54,12 +58,12 @@ public class Movie implements Parcelable{
 
     }
 
-    public Movie(int movieId, String title, String posterUrl, String overview, double voteAverage){
+    public Movie(int movieId, String title, String posterUrl, String overview, String releaseDate, double voteAverage){
         mMovieId = movieId;
         mTitle = title;
         mOverview = overview;
         mPosterUrl = posterUrl;
-        //mReleaseDate = releaseDate;
+        mReleaseDate = releaseDate;
         mVoteAverage = voteAverage;
     }
 
