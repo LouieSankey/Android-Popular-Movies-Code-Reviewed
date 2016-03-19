@@ -6,12 +6,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.louissankey.popularmovies.model.Movie;
+import com.example.louissankey.popularmovies.model.MoviePosterAdapter;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -65,6 +69,9 @@ public class MovieDetails extends AppCompatActivity{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         //todo remove this code
         SharedPreferences preferences = getSharedPreferences(MainActivity.FAVORITE_MOVIES, MODE_PRIVATE);
@@ -249,6 +256,25 @@ public class MovieDetails extends AppCompatActivity{
         });
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.details_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
 
 }

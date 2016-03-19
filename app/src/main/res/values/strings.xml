@@ -38,4 +38,7 @@
     <string name="favorite_movies">Viewing Favorite Movies</string>
     <string name="reviews">Reviews</string>
     <string name="author">"Author: "</string>
+    <string name="title_movie_list">Movies</string>
+    <string name="title_movie_detail">Movie Detail</string>
+    <string name="share_trailer">Share Trailer</string>
 </resources>

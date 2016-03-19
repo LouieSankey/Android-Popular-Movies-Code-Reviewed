@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    //I didn't know how to refactor these out or if they should be refactored
     public static final String MOVIE_TITLE = "MOVIE_TITLE";
     public static final String MOVIE_POSTER_URL = "MOVIE_POSTER_URL";
     public static final String MOVIE_OVERVIEW = "MOVIE_OVERVIEW";
